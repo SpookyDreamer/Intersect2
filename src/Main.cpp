@@ -5,9 +5,12 @@
 #include <fstream>
 #include "Line.h"
 #include "Point.h"
+#include "Main.h"
 #include <unordered_set>
 
 using namespace std;
+ifstream input;
+ofstream output;
 
 class Hash_point
 {
@@ -26,23 +29,13 @@ public:
 	}
 };
 
+//std::vector<Line*> lines;
+//std::unordered_set<Point*, Hash_point, Equal_point> intersects;
 
-int main(int argc, char* argv[])
+
+int calculate(unsigned int count)
 {
-	ifstream input;
-	ofstream output;
-	for (int i = 0; i < argc; i++) {
-		if (strncmp(argv[i], "-i", 2) == 0) {
-			input.open(argv[i + 1]);
-		}
-		else if (strncmp(argv[i], "-o", 2) == 0) {
-			output.open(argv[i + 1]);
-		}
-	}
-	
-	unsigned int count;
-	//input >> count;
-	std::cin >> count;
+	//std::cin >> count;
 	std::vector<Line*> lines;
 	std::unordered_set<Point*, Hash_point, Equal_point> intersects;
 	unsigned int i;
@@ -50,10 +43,10 @@ int main(int argc, char* argv[])
 	{
 		char type;
 		double x1, y1, x2, y2;
-		//input >> type >> x1 >> y1 >> x2 >> y2;
-		std::cin >> type >> x1 >> y1 >> x2 >> y2;
-		Point *point1 = new Point(x1, y1);
-		Point *point2 = new Point(x2, y2);
+		input >> type >> x1 >> y1 >> x2 >> y2;
+		//std::cin >> type >> x1 >> y1 >> x2 >> y2;
+		Point* point1 = new Point(x1, y1);
+		Point* point2 = new Point(x2, y2);
 		Line* line;
 		if (type == 'L') {
 			line = new Line(point1, point2);
@@ -75,31 +68,33 @@ int main(int argc, char* argv[])
 			{
 				continue;
 			}
-			Point *p = line->intersect(lines[j]);
+			Point* p = line->intersect(lines[j]);
 			if (line->isOnline(p) && lines[j]->isOnline(p)) {
 				intersects.insert(p);
 			}
 		}
 		lines.push_back(line);
 	}
+	return intersects.size();
+}
 
-	/*int same = 0;
-	unsigned int size = intersects.size();
-	for (i = 0; i < size; i++)
-	{
-		Point* p = intersects[i];
-		int j;
-		for (j = i + 1;j < intersects.size();j++) {
-			if (p->equals(intersects[j]))
-			{
-				same++;
-				break;
-			}
+
+int main(int argc, char* argv[])
+{
+	for (int i = 0; i < argc; i++) {
+		if (strncmp(argv[i], "-i", 2) == 0) {
+			input.open(argv[i + 1]);
 		}
-		size = intersects.size();
-	}*/
+		else if (strncmp(argv[i], "-o", 2) == 0) {
+			output.open(argv[i + 1]);
+		}
+	}
 	
-	std::wcout << intersects.size()  << std::endl;
-	output << intersects.size();
+	unsigned int count;
+	input >> count;
+	//std::cin >> count;
+	int res = calculate(count);
+	std::wcout << res  << std::endl;
+	output << res;
 	return 0;
 }
