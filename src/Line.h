@@ -4,6 +4,7 @@
 class Line
 {
 protected:
+	char type;
 	double A = 0;
 	double B = 0;
 	double C = 0;
@@ -16,6 +17,10 @@ public:
 	virtual Point* intersect(Line* line);
 
 	virtual bool isOnline(Point* point);
+
+	virtual bool equals(Line* line);
+
+	virtual char getType();
 };
 
 class Radial :public Line
@@ -26,17 +31,24 @@ protected:
 
 public:
 	Radial(Point* point1, Point* point2) :Line(point1, point2) {
+		type = 'R';
 		x1 = point1->getX();
 		x2 = point2->getX();
 	}
 
 	virtual bool isOnline(Point* point);
+
+	virtual bool equals(Line* line);
 };
 
 class Segment :public Radial
 {
 public:
-	Segment(Point* point1, Point* point2) :Radial(point1, point2){}
+	Segment(Point* point1, Point* point2) :Radial(point1, point2){
+		type = 'S';
+	}
 
 	virtual bool isOnline(Point* point);
+
+	virtual bool equals(Line* line);
 };

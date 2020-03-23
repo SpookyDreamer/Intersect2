@@ -7,31 +7,11 @@
 #include "Point.h"
 #include "Main.h"
 #include <unordered_set>
+#include "lineSeries.h"
 
 using namespace std;
 ifstream input;
 ofstream output;
-
-class Hash_point
-{
-public:
-	size_t operator()(Point *p) const
-	{
-		return std::hash<double>()(p->getX() + p->getY());
-	}
-};
-
-class Equal_point {
-public:
-	bool operator()(Point *p1, Point *p2) const
-	{
-		return p1->equals(p2);
-	}
-};
-
-//std::vector<Line*> lines;
-//std::unordered_set<Point*, Hash_point, Equal_point> intersects;
-
 
 int calculate(unsigned int count)
 {
@@ -91,9 +71,35 @@ int main(int argc, char* argv[])
 	}
 	
 	unsigned int count;
-	input >> count;
-	//std::cin >> count;
-	int res = calculate(count);
+	//input >> count;
+	std::cin >> count;
+	
+	LineSeries* ls = new LineSeries();
+	int i;
+	for (i = 0; i < count; i++) {
+		char type;
+		double x1, y1, x2, y2;
+		//input >> type >> x1 >> y1 >> x2 >> y2;
+		std::cin >> type >> x1 >> y1 >> x2 >> y2;
+		Point* point1 = new Point(x1, y1);
+		Point* point2 = new Point(x2, y2);
+		Line* line;
+		if (type == 'L') {
+			line = new Line(point1, point2);
+		}
+		else if (type == 'R') {
+			line = new Radial(point1, point2);
+		}
+		else if (type == 'S') {
+			line = new Segment(point1, point2);
+		}
+		else {
+			return 1;
+		}
+		ls->add_line(line);
+	}
+	int res = ls->cal_intersects();
+
 	std::wcout << res  << std::endl;
 	output << res;
 	return 0;
