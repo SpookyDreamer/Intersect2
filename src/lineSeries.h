@@ -41,4 +41,6 @@ public:
 	virtual std::unordered_set<Point*, Hash_point, Equal_point> getIntersects();
 
 	virtual std::vector<Line*> getLines();
+
+	virtual int get_lines_num();
 };
